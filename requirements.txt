@@ -1,0 +1,14 @@
+cairocffi==1.7.1
+CairoSVG==2.7.1
+cffi==1.17.1
+cssselect2==0.7.0
+defusedxml==0.7.1
+drawsvg==2.4.0
+imageio==2.37.0
+imageio-ffmpeg==0.6.0
+numpy==1.26.4
+pillow==11.1.0
+pwkit==1.2.2
+pycparser==2.22
+tinycss2==1.4.0
+webencodings==0.5.1
