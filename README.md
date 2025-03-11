@@ -1,16 +1,27 @@
 ## Tok's Profile Picture generator:
-This is a script that I made to generate a SVG / PNG of an analog clockface at a specified time
+This is a script that I made to generate a SVG of an analog clockface at a specified time
 
-Currently generates a png at ./test.png
+look right, surely it's more efficent to generate a bunch of images and pull the correct one for the correct time, but I thought it would be more fun to draw it dynamically and hook it up to an endpoint for later use.
 
-look right, surely it's more efficent to generate a bunch of PFPs and pull the correct one for the correct time, but I thought it would be more fun to create a function to dynamically provide the time, that way if I *want* to generate the images I can use it, or if I want I an hook this up to an HTTP endpoint and go nuts.
+(maybe I'll even end up customizing the gradient over time and other fun stuff)
 
 ## Requirements:
 Python 3.13.2
 
 ## Use:
-``` bash
+```bash
+    # Environment setup
     python -m venv .venv
-    .venv/bin/python -m pip install -r requirements.txt
+    .venv/bin/python -m pip install -r requirements.txt    
+    # run the webserver
+    .venvv/bin/python -m fastapi run server.py
+    # generate images
     .venv/bin/python makepfp.py
+    # run docker container
+    docker compose up -d
 ```
+
+you can also fill out a config.toml file to upload this generated pfp to various services.
+
+## Built with:
+many things, to list soon :)

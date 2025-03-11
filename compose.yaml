@@ -1,0 +1,21 @@
+services:
+  webserver:
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      - TZ=America/New_York
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.upload.schedule: "@every 2m"
+      ofelia.job-exec.upload.command: "/app/upload.sh"
+  ofelia:
+    image: mcuadros/ofelia:latest
+    environment:
+      - TZ=America/New_York
+    depends_on:
+      - webserver
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
