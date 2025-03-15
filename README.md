@@ -24,4 +24,6 @@ Python 3.13.2
 you can also fill out a config.toml file to upload this generated pfp to various services.
 
 ## Built with:
-many things, to list soon :)
+[DrawSVG](https://github.com/cduck/drawsvg)
+[fastapi](https://github.com/fastapi/fastapi)
+[atproto](https://github.com/MarshalX/atproto)

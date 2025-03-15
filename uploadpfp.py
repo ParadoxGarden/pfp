@@ -1,12 +1,14 @@
+import atproto
+from atproto_client.models import blob_ref
 import requests
 import base64
 from tls_client import Session
 import tomllib
 from atproto import Client, client_utils, models
 
+image_file = "pfp.png"
 with open("config.toml", "rb") as f:
     config = tomllib.load(f)
-image_file = "pfp.png"
 # Discord
 # 
 def discord_upload()->requests.Response:
@@ -15,6 +17,7 @@ def discord_upload()->requests.Response:
             "avatar": f"data:image/jpeg;base64,{base64.b64encode(f.read()).decode()}"
         }
         sesh = Session(client_identifier="chrome_115", random_tls_extension_order=True)
+        # this is a bunch of nonsense to get discord to think we're a browser
         headers = {
                 "authority": "discord.com",
                 "method": "PATCH",
@@ -35,7 +38,7 @@ def discord_upload()->requests.Response:
                 "X-Discord-Locale": "en-US",
                 "X-Super-Properties": "eyJvcyI6IldpbmRvd3MiLCJicm93c2VyIjoiRGlzY29yZCBDbGllbnQiLCJyZWxlYXNlX2NoYW5uZWwiOiJzdGFibGUiLCJjbGllbnRfdmVyc2lvbiI6IjEuMC45MDIwIiwib3NfdmVyc2lvbiI6IjEwLjAuMTkwNDUiLCJvc19hcmNoIjoieDY0IiwiYXBwX2FyY2giOiJpYTMyIiwic3lzdGVtX2xvY2FsZSI6ImVuLVVTIiwiYnJvd3Nlcl91c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV09XNjQpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIGRpc2NvcmQvMS4wLjkwMjAgQ2hyb21lLzEwOC4wLjUzNTkuMjE1IEVsZWN0cm9uLzIyLjMuMjYgU2FmYXJpLzUzNy4zNiIsImJyb3dzZXJfdmVyc2lvbiI6IjIyLjMuMjYiLCJjbGllbnRfYnVpbGRfbnVtYmVyIjoyNDAyMzcsIm5hdGl2ZV9idWlsZF9udW1iZXIiOjM4NTE3LCJjbGllbnRfZXZlbnRfc291cmNlIjpudWxsLCJkZXNpZ25faWQiOjB9"
             }
-        r = sesh.patch("https://discord.com/api/v9/users/@me", json=payload, headers=headers)
+        r = requests.patch("https://discord.com/api/v9/users/@me", json=payload, headers=headers)
         return r
 
 
@@ -49,14 +52,33 @@ def discord_upload()->requests.Response:
 # bsky
 # https://atproto.blue/en/latest/
 # 
-def bsky_upload()->requests.Response:
+def bsky_upload()->atproto.models.ComAtprotoRepoPutRecord.Response:
+    pfp_collection:str="app.bsky.actor.profile"
     client = Client()
-    login:dict = config["bsky"]
-    #client.login(login["user"],login["pass"])
+    login:dict[str, str] = config["bsky"]
+    _ = client.login(login["user"],login["pass"])
+    with open(image_file, "rb") as f:
+        blob: atproto.models.ComAtprotoRepoUploadBlob.Data = atproto.models.ComAtprotoRepoUploadBlob.Data(f.read())
+        blobresp:atproto.models.ComAtprotoRepoUploadBlob.Response = client.com.atproto.repo.upload_blob(blob)
+        blobref: blob_ref.BlobRef = blobresp.blob
 
-def upload_all()->dict:
-    r = discord_upload()
-    r = bsky_upload()    
+        getparams: atproto.models.ComAtprotoRepoGetRecord.Params = atproto.models.ComAtprotoRepoGetRecord.Params(collection=pfp_collection,repo=client.me.did,rkey="self") 
+        profile: atproto.models.ComAtprotoRepoGetRecord.Response = client.com.atproto.repo.get_record(params=getparams)
+        
+        putrecord: atproto.models.AppBskyActorProfile.Record = profile.value
+        putrecord.avatar = blobref
+
+        putdata: atproto.models.ComAtprotoRepoPutRecord.Data = \
+            atproto.models.ComAtprotoRepoPutRecord.Data(collection=pfp_collection,record=putrecord,repo=client.me.did,rkey="self")
+        putresp = client.com.atproto.repo.put_record(putdata)
+        return putresp
+
+def upload_all()->list:
+    l = list()
+    l.append(discord_upload())
+    l.append(bsky_upload())
+
 if __name__ == '__main__':
     r = discord_upload()
     r = bsky_upload()
+
