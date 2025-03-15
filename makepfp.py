@@ -2,34 +2,34 @@ import drawsvg as dw
 import math
 import time
  
-def draw_clock(radius:int,fill, accent,include_seconds:bool=False, smooth_hands:bool=False)->dw.Drawing:
+def draw_clock(radius:int,fill, accent,include_seconds:bool=False, smooth_hands:bool=True, clocktime:time.struct_time=time.localtime())->dw.Drawing:
     d:dw.Drawing = dw.Drawing(2*radius,2*radius, origin='center')
     d.append(dw.Rectangle(-radius,-radius,2*radius,2*radius,fill=fill))
     d.append(dw.Circle(0,0,radius, fill=fill, stroke_width=20,stroke=fill))
     for i in range(0,360,30):
         rad = math.radians(i)
         # time sectional markings
-        l = dw.Line(
+        l:dw.Line = dw.Line(
             radius * math.cos(rad),
             radius * math.sin(rad),
             (radius - (radius / 6)) * math.cos(rad),
             (radius - (radius / 6)) * math.sin(rad),
             stroke=accent,stroke_width=25)
         d.append(l)
-    curtime = time.localtime()
+    clocktime = time.localtime()
     if smooth_hands:
-        minfrac:float = curtime.tm_min / 60
-        secfrac:float = curtime.tm_sec / 60
-        hourrad = math.radians(360 / 12 * (curtime.tm_hour + minfrac))
-        minrad = math.radians(360 / 60 * (curtime.tm_min + secfrac))
-        secrad = math.radians(360 / 60 * curtime.tm_sec)
+        minfrac:float = clocktime.tm_min / 60
+        secfrac:float = clocktime.tm_sec / 60
+        hourrad = math.radians(360 / 12 * (clocktime.tm_hour + minfrac))
+        minrad = math.radians(360 / 60 * (clocktime.tm_min + secfrac))
+        secrad = math.radians(360 / 60 * clocktime.tm_sec)
     else:
-        hourrad = math.radians(360 / 12 * curtime.tm_hour)
-        minrad = math.radians(360 / 60 * curtime.tm_min)
-        secrad = math.radians(360 / 60 * curtime.tm_sec)
+        hourrad = math.radians(360 / 12 * clocktime.tm_hour)
+        minrad = math.radians(360 / 60 * clocktime.tm_min)
+        secrad = math.radians(360 / 60 * clocktime.tm_sec)
     # seconds hand (if shown)
     if include_seconds:
-        secrad = math.radians(360 / 60 * curtime.tm_sec)
+        secrad = math.radians(360 / 60 * clocktime.tm_sec)
         l = dw.Line(
             0,0,
             (radius - (radius / 6)) * math.sin(secrad), 
@@ -50,10 +50,9 @@ def draw_clock(radius:int,fill, accent,include_seconds:bool=False, smooth_hands:
         -(radius - (radius / 2)) * math.cos(hourrad),
         stroke="black",stroke_width=40)
     d.append(l)
-
-    
     d.append(dw.Circle(0,0,radius/40, fill=accent))
     return d
+
 # group gradient stuff for future use
 def make_gradient()->dw.LinearGradient:
     # gradient definition
@@ -62,7 +61,7 @@ def make_gradient()->dw.LinearGradient:
     grad.add_stop(150,"thistle")
     return grad
 
-#define pfp
+# defines default pfp params
 def draw_default_clock()->dw.Drawing:
     grad: dw.LinearGradient = make_gradient()
     d = draw_clock(1000, grad,"black", False, True)

@@ -16,7 +16,6 @@ def discord_upload()->requests.Response:
         payload = {
             "avatar": f"data:image/jpeg;base64,{base64.b64encode(f.read()).decode()}"
         }
-        sesh = Session(client_identifier="chrome_115", random_tls_extension_order=True)
         # this is a bunch of nonsense to get discord to think we're a browser
         headers = {
                 "authority": "discord.com",
@@ -72,11 +71,6 @@ def bsky_upload()->atproto.models.ComAtprotoRepoPutRecord.Response:
             atproto.models.ComAtprotoRepoPutRecord.Data(collection=pfp_collection,record=putrecord,repo=client.me.did,rkey="self")
         putresp = client.com.atproto.repo.put_record(putdata)
         return putresp
-
-def upload_all()->list:
-    l = list()
-    l.append(discord_upload())
-    l.append(bsky_upload())
 
 if __name__ == '__main__':
     r = discord_upload()
