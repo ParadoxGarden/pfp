@@ -17,7 +17,7 @@ docker
     python -m venv .venv
     .venv/bin/python -m pip install -r requirements.txt    
     # run the webserver
-    .venvv/bin/python -m fastapi run server.py
+    .venv/bin/python -m fastapi run server.py
     # generate images
     .venv/bin/python makepfp.py
     # run docker container
