@@ -6,10 +6,13 @@ look right, surely it's more efficent to generate a bunch of images and pull the
 (maybe I'll even end up customizing the gradient over time and other fun stuff)
 
 ## Requirements:
-(to run scripts)
-Python 3.13.2
-(automated use)
-docker
+To run scripts:
+
+- Python 3.13.2 (version is just the one I used for development & testing, I'm sure other versions work also)
+
+Automated use:
+
+- Docker
 
 ## Use:
 ```bash
