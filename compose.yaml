@@ -7,7 +7,7 @@ services:
       - TZ=America/New_York
     labels:
       ofelia.enabled: "true"
-      ofelia.job-exec.upload.schedule: "@every 2m"
+      ofelia.job-exec.upload.schedule: "@every 3m"
       ofelia.job-exec.upload.command: "/app/upload.sh"
   ofelia:
     image: mcuadros/ofelia:latest

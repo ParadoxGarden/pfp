@@ -33,3 +33,4 @@ you can also fill out a config.toml file to upload this generated pfp to various
 - [DrawSVG](https://github.com/cduck/drawsvg)
 - [fastapi](https://github.com/fastapi/fastapi)
 - [atproto](https://github.com/MarshalX/atproto)
+- [ofelia](https://hub.docker.com/r/mcuadros/ofelia)
