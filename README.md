@@ -1,18 +1,13 @@
-## Profile picture generator:
-This is a script that I made to generate a SVG of an analog clockface at a specified time
+## SVG clock generator
+This is a script that I made to [draw](https://github.com/cduck/drawsvg) a SVG of an analog clockface at a specified time.
+additionally there is a [fastapi](https://github.com/fastapi/fastapi) webserver which provides endpoints to get the clock image (at the current time) in various ways
 
-look right, surely it's more efficent to generate a bunch of images and pull the correct one for the correct time, but I thought it would be more fun to draw it dynamically and hook it up to a web endpoint for later use.
-
-(maybe I'll even end up customizing the gradient over time and other fun stuff)
 
 ## Requirements:
-To run scripts:
 
 - Python 3.13.2 (version is just the one I used for development & testing, I'm sure other versions work also)
 
-Automated use:
 
-- Docker
 
 ## Use:
 ```bash
@@ -23,14 +18,8 @@ Automated use:
     .venv/bin/python -m fastapi run server.py
     # generate images
     .venv/bin/python makepfp.py
+
+
     # run docker container
     docker compose up -d
 ```
-
-you can also fill out a config.toml file to upload this generated pfp to various services (currently just bsky and discord).
-
-## Built with:
-- [DrawSVG](https://github.com/cduck/drawsvg)
-- [fastapi](https://github.com/fastapi/fastapi)
-- [atproto](https://github.com/MarshalX/atproto)
-- [ofelia](https://hub.docker.com/r/mcuadros/ofelia)
